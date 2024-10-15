@@ -1,4 +1,6 @@
-# Darkzap
+<p align="center"><img src="https://img.icons8.com/?size=150&id=16733&format=png&color=ffffff"></p>
+
+<h1 align="center">Darkzap</h1> 
 
 Este é um aplicativo de chat simples usando Flask e Socket.IO para permitir a comunicação em tempo real entre clientes conectados. Ele suporta o envio de mensagens para todos os usuários conectados ao servidor.
 
