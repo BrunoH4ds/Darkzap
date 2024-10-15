@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://img.icons8.com/?size=100&id=16733&format=png&color=000000">
+    <title>DarkZap</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chat-container::-webkit-scrollbar {
+            display: none;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        #top-bar {
+            background-color: #000000;
+            color: #FFF;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #chat-container {
+            padding: 10px;
+            background-color: #323232;
+            height: calc(100vh - 150px);
+            overflow-y: scroll;
+        }
+
+        #chat-container p {
+            background-color: #151515;
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+            margin: 10px 0;
+        }
+
+        #input-container {
+            display: flex;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #000000;
+            padding: 10px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #input-container input[type="text"] {
+            padding: 10px;
+            border: none;
+            outline: none;
+            background-color: #151515;
+            color: white;
+            flex: 1;
+        }
+
+        #input-container input#usuario {
+            margin-right: 10px;
+            width: 30%;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+
+        #input-container input#mensagem {
+            flex: 1;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        #input-container button {
+            padding: 10px 20px;
+            background-color: #151515;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        @media screen and (max-width: 426px) {
+            #input-container{
+                flex-direction: column;
+            }
+            #input-container input#usuario{
+                margin-right: 0;
+                width: 100%;
+                border-radius: 5px;
+            }
+            #input-container input#mensagem{
+                width: 100%;
+                margin: 10px 0;
+                border-radius: 5px;
+            }
+            #input-container button {
+                padding: 10px;
+                margin-left: 0;
+                width: 100%;
+                border-radius: 5px;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.js" integrity="sha512-Z6C1p1NIexPj5MsVUunW4pg7uMX6/TT3CUVldmjXx2kpip1eZcrAnxIusDxyFIikyM9A61zOVNgvLr/TGudOQg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.socket.io/4.7.1/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    <div id="top-bar">
+        <h1>Darkzap</h1>
+    </div>
+
+    <div id="chat-container">
+        <p>Bem-vindo ao DarkZap!</p>
+    </div>
+
+    <div id="input-container">
+        <input type="text" id="usuario" placeholder="Usuário" required>
+        <div style="width: 10px;"></div>
+        <input type="text" id="mensagem" placeholder="Mensagem" required>
+        <button id="botao">Enviar</button>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Alterar para o IP do seu PC na rede local
+            var socket = io(window.location.origin);
+            socket.on("connect", function() {
+                console.log("Conectado ao servidor!");
+            });
+
+            socket.on("message", function(data) {
+                console.log("Mensagem recebida:", data);
+                $("#chat-container").append($('<p>').text(data));
+                // Rola para baixo no container de chat
+                $("#chat-container").scrollTop($("#chat-container")[0].scrollHeight);
+            });
+
+            $("#botao").on('click', function() {
+                console.log("Botão clicado");
+                socket.send($('#usuario').val() + ": " + $('#mensagem').val());
+                $('#mensagem').val('');
+            });
+
+            $("#mensagem").on('keypress', function(event) {
+                if (event.key === "Enter") {
+                    console.log("Enter pressionado");
+                    socket.send($('#usuario').val() + ": " + $('#mensagem').val());
+                    $('#mensagem').val('');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
